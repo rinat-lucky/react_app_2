@@ -9,9 +9,7 @@ const ErrorMessage = () => {
     margin: "0 auto",
   }
 
-  return (
-    <img style={style} src={img} alt="error" />
-  );
+  return <img style={style} src={img} alt="error"/>;
 };
 
 export default ErrorMessage;
