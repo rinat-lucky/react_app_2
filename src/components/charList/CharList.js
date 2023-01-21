@@ -56,8 +56,20 @@ class CharList extends React.Component {
 		this.onRequest();
 	}
 
+	itemRefs = [];
+
+	setRef = (ref) => {
+		this.itemRefs.push(ref);
+	}
+
+	focusOnItem = (id) => {
+		this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+		this.itemRefs[id].classList.add('char__item_selected');
+		this.itemRefs[id].focus();
+	}
+
 	renderItems(chars) {
-		const items = chars.map((item) => {
+		const items = chars.map((item, i) => {
 			const { id, name, thumbnail } = item;
 			let imgStyle = {'objectFit' : 'cover'};
 			if (thumbnail.split('/').at(-1) === 'image_not_available.jpg') {
@@ -67,11 +79,22 @@ class CharList extends React.Component {
 			return (
 				<li 
 					className="char__item"
+					tabIndex={0}
+					ref={this.setRef}
 					key={id}
-					onClick={() => this.props.onCharSelected(id)}
+					onClick={() => {
+						this.props.onCharSelected(id);
+						this.focusOnItem(i);
+					}}
+					onKeyPress={(e) => {
+						if (e.key === ' ' || e.key === "Enter") {
+							this.props.onCharSelected(id);
+							this.focusOnItem(i);
+						}
+					}}
 				>
-						<img src={thumbnail} alt={name} style={imgStyle}/>
-						<div className="char__name">{name}</div>
+					<img src={thumbnail} alt={name} style={imgStyle}/>
+					<div className="char__name">{name}</div>
 				</li>
 			)
 		});
@@ -80,7 +103,7 @@ class CharList extends React.Component {
 			<ul className="char__grid">
 				{items}
 			</ul>
-		)
+		);
 	}
 
 	render() {
@@ -105,7 +128,7 @@ class CharList extends React.Component {
 					<div className="inner">load more</div>
 				</button>
 			</div>
-		)
+		);
 	}
 }
 
